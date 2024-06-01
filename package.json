@@ -2,7 +2,7 @@
 	"name": "@axiston/sdk",
 	"version": "0.1.0",
 	"type": "module",
-	"license": "Apache-2.0",
+	"license": "MIT",
 	"author": "Axiston <contact@axiston.com>",
 	"keywords": [],
 	"description": "A minimal Axiston client",

@@ -1,2 +1,3 @@
-export type { ClientOptions } from "./config";
-export { Client } from "./client";
+export type { AxistonClientOptions } from "./config";
+export { AxistonError } from "./error";
+export { AxistonClient } from "./client";

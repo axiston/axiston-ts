@@ -11,23 +11,27 @@ export const clientVersion = "0.1.0";
 export const runtimeVersion = "16.0";
 
 /**
- * TODO.
+ * Options for {@link AxistonClient }.
+ *
+ * Overrides environment variables.
  */
-export interface ClientOptions {
+export interface AxistonClientOptions {
 	/**
-	 * Attaches an `api key`.
+	 * Attaches an `API key`.
+	 *
+	 * Overrides environment variable `AXISTON_API_KEY`.
 	 */
 	apiKey?: string;
 
 	/**
-	 * Overrides default `base url`:
-	 * `https://api.axiston.com`.
+	 * Overrides default `base url`: `https://api.axiston.com`
+	 * or environment variable `AXISTON_BASE_URL`.
 	 */
 	baseUrl?: string | URL;
 
 	/**
-	 * Overrides default `User-Agent` header:
-	 * `Axiston/0.1.0 (TS; Ver. 16.0)`
+	 * Overrides default `User-Agent` header: `Axiston/0.1.0 (TS; Ver. 16.0)`
+	 * or environment variable `AXISTON_USER_AGENT`.
 	 */
 	userAgent?: string;
 }
@@ -36,10 +40,12 @@ const baseUrl = "https://api.axiston.com";
 const userAgent = `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`;
 
 /**
- * TODO.
+ * Attempts to construct {@link AxistonClientOptions} from environment variables.
+ *
+ * Returns default {@link AxistonClientOptions} otherwise.
  */
-export function tryEnvironment(): Required<ClientOptions> {
-	const options: Required<ClientOptions> = {
+export function tryEnvironment(): Required<AxistonClientOptions> {
+	const options: Required<AxistonClientOptions> = {
 		apiKey: "",
 		baseUrl,
 		userAgent,
@@ -74,9 +80,9 @@ export class ClientConfig {
 	readonly userAgent: string;
 
 	/**
-	 * TODO.
+	 * Instantiates a new {@link ClientConfig} with provided options.
 	 */
-	constructor(options?: ClientOptions) {
+	constructor(options?: AxistonClientOptions) {
 		const env = tryEnvironment();
 		this.apiKey = options?.apiKey || env.apiKey;
 		this.baseUrl = new URL(options?.baseUrl || env.baseUrl);
@@ -85,8 +91,10 @@ export class ClientConfig {
 
 	/**
 	 * TODO.
+	 *
+	 * @throws AxistonError
 	 */
-	async send(): Promise<void> {
+	async send<T = unknown>(body: unknown): Promise<T> {
 		throw new Error("not implemented.");
 	}
 }
