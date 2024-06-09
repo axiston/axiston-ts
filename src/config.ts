@@ -3,12 +3,17 @@
  */
 export const clientVersion = "0.1.0";
 
-// TODO: Read runtime version.
+/**
+ * TODO: Read runtime version.
+ */
+export function tryRuntimeVersion(): string {
+	return "16.0";
+}
 
 /**
  * The used version of the runtime.
  */
-export const runtimeVersion = "16.0";
+export const runtimeVersion = tryRuntimeVersion();
 
 /**
  * Options for {@link AxistonClient }.
@@ -36,9 +41,6 @@ export interface AxistonClientOptions {
 	userAgent?: string;
 }
 
-const baseUrl = "https://api.axiston.com";
-const userAgent = `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`;
-
 /**
  * Attempts to construct {@link AxistonClientOptions} from environment variables.
  *
@@ -47,29 +49,32 @@ const userAgent = `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`;
 export function tryEnvironment(): Required<AxistonClientOptions> {
 	const options: Required<AxistonClientOptions> = {
 		apiKey: "",
-		baseUrl,
-		userAgent,
+		baseUrl: new URL("https://api.axiston.com"),
+		userAgent: `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`,
 	};
 
-	const env = (globalThis as any).process?.env;
-	if (typeof env !== "object" && env !== null) {
-		return options;
-	}
+	const env: Record<string, unknown> = globalThis["process"]?.["env"];
+	if (typeof env === "object" && env !== null) {
+		if (typeof env.AXISTON_API_KEY === "string") {
+			options.apiKey = env.AXISTON_API_KEY;
+		}
 
-	if (typeof env["AXISTON_API_KEY"] === "string") {
-		options.apiKey = env["AXISTON_API_KEY"];
-	}
+		if (typeof env.AXISTON_BASE_URL === "string") {
+			options.baseUrl = env.AXISTON_BASE_URL;
+		}
 
-	if (typeof env["AXISTON_BASE_URL"] === "string") {
-		options.baseUrl = env["AXISTON_BASE_URL"];
-	}
-
-	if (typeof env["AXISTON_USER_AGENT"] === "string") {
-		options.apiKey = env["AXISTON_USER_AGENT"];
+		if (typeof env.AXISTON_USER_AGENT === "string") {
+			options.apiKey = env.AXISTON_USER_AGENT;
+		}
 	}
 
 	return options;
 }
+
+/**
+ * Cached default/environment options.
+ */
+export const defaultOptions = tryEnvironment();
 
 /**
  * TODO.
@@ -83,10 +88,9 @@ export class ClientConfig {
 	 * Instantiates a new {@link ClientConfig} with provided options.
 	 */
 	constructor(options?: AxistonClientOptions) {
-		const env = tryEnvironment();
-		this.apiKey = options?.apiKey || env.apiKey;
-		this.baseUrl = new URL(options?.baseUrl || env.baseUrl);
-		this.userAgent = options?.userAgent || env.userAgent;
+		this.apiKey = options?.apiKey || defaultOptions.apiKey;
+		this.baseUrl = new URL(options?.baseUrl || defaultOptions.baseUrl);
+		this.userAgent = options?.userAgent || defaultOptions.userAgent;
 	}
 
 	/**
@@ -94,7 +98,11 @@ export class ClientConfig {
 	 *
 	 * @throws AxistonError
 	 */
-	async send<T = unknown>(body: unknown): Promise<T> {
+	async send<T = unknown>(
+		method: string,
+		path: string,
+		body?: unknown,
+	): Promise<T> {
 		throw new Error("not implemented.");
 	}
 }

@@ -1,5 +1,5 @@
 {
-	"name": "@axiston/sdk",
+	"name": "@axiston/api",
 	"version": "0.1.0",
 	"type": "module",
 	"license": "MIT",

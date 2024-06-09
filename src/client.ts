@@ -1,4 +1,7 @@
 import { ClientConfig, type AxistonClientOptions } from "./config";
+import { type Events, EventsService } from "./services/events";
+import { Hooks, HooksService } from "./services/hooks";
+import { Flows, FlowsService } from "./services/flows";
 
 /**
  * A minimal `Axiston` client.
@@ -7,6 +10,9 @@ import { ClientConfig, type AxistonClientOptions } from "./config";
  */
 export class AxistonClient {
 	readonly #config: ClientConfig;
+	readonly #events: EventsService;
+	readonly #flows: FlowsService;
+	readonly #hooks: HooksService;
 
 	/**
 	 * Constructs a new `Axiston` client.
@@ -17,6 +23,9 @@ export class AxistonClient {
 	 */
 	constructor(options?: AxistonClientOptions) {
 		this.#config = new ClientConfig(options);
+		this.#events = new EventsService(this.#config);
+		this.#flows = new FlowsService(this.#config);
+		this.#hooks = new HooksService(this.#config);
 	}
 
 	/**
@@ -46,6 +55,27 @@ export class AxistonClient {
 	 * @throws AxistonError
 	 */
 	async health(): Promise<void> {
-		throw new Error("not implemented.");
+		await this.#config.send("GET", "/health");
+	}
+
+	/**
+	 * APIs for `/v1/events` endpoints.
+	 */
+	get events(): Events {
+		return this.#events;
+	}
+
+	/**
+	 * APIs for `/v1/flows` endpoints.
+	 */
+	get flows(): Flows {
+		return this.#flows;
+	}
+
+	/**
+	 * APIs for `/v1/hooks` endpoints.
+	 */
+	get hooks(): Hooks {
+		return this.#hooks;
 	}
 }
