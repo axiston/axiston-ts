@@ -1,35 +1,35 @@
 {
-  "name": "@axiston/sdk",
-  "version": "0.1.0",
-  "type": "module",
-  "license": "Apache-2.0",
-  "author": "Axiston <contact@axiston.com>",
-  "keywords": [],
-  "description": "A minimal Axiston client",
-  "repository": "git+https://github.com/axiston/axiston-ts.git",
-  "bugs": "https://github.com/axison/axiston-ts/issues",
-  "homepage": "https://www.axiston.com/",
-  "exports": {
-    "types": "./dist/index.d.ts",
-    "import": "./dist/index.js",
-    "require": "./dist/index.cjs"
-  },
-  "scripts": {
-    "build": "rimraf ./dist && tsup",
-    "dev": "rimraf ./dist && tsup --watch",
-    "test": "node --import tsx --test ./src/*.spec.ts",
-    "format": "biome format --write .",
-    "lint": "biome lint .",
-    "check": "biome check --apply .",
-    "ci": "biome ci ."
-  },
-  "devDependencies": {
-    "@biomejs/biome": "^1.7.3",
-    "@types/node": "^20.12.10",
-    "esbuild": "^0.20.2",
-    "rimraf": "^5.0.5",
-    "tsup": "^8.0.2",
-    "tsx": "^4.9.3",
-    "typescript": "^5.4.5"
-  }
+	"name": "@axiston/api",
+	"version": "0.1.0",
+	"type": "module",
+	"license": "MIT",
+	"author": "Axiston <contact@axiston.com>",
+	"keywords": [],
+	"description": "A minimal Axiston client",
+	"repository": "git+https://github.com/axiston/axiston-ts.git",
+	"bugs": "https://github.com/axison/axiston-ts/issues",
+	"homepage": "https://www.axiston.com/",
+	"exports": {
+		"types": "./dist/index.d.ts",
+		"import": "./dist/index.js",
+		"require": "./dist/index.cjs"
+	},
+	"scripts": {
+		"build": "rimraf ./dist && tsup",
+		"dev": "rimraf ./dist && tsup --watch",
+		"test": "node --import tsx --test ./src/*.spec.ts",
+		"format": "biome format --write .",
+		"lint": "biome lint .",
+		"check": "biome check --apply .",
+		"ci": "biome ci ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.3",
+		"@types/node": "^20.12.10",
+		"esbuild": "^0.20.2",
+		"rimraf": "^5.0.5",
+		"tsup": "^8.0.2",
+		"tsx": "^4.9.3",
+		"typescript": "^5.4.5"
+	}
 }

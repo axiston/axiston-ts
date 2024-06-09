@@ -3,90 +3,106 @@
  */
 export const clientVersion = "0.1.0";
 
-// TODO: Read runtime version.
+/**
+ * TODO: Read runtime version.
+ */
+export function tryRuntimeVersion(): string {
+	return "16.0";
+}
 
 /**
  * The used version of the runtime.
  */
-export const runtimeVersion = "16.0";
+export const runtimeVersion = tryRuntimeVersion();
 
 /**
- * TODO.
+ * Options for {@link AxistonClient }.
+ *
+ * Overrides environment variables.
  */
-export interface ClientOptions {
-  /**
-   * Attaches an `api key`.
-   */
-  apiKey?: string;
+export interface AxistonClientOptions {
+	/**
+	 * Attaches an `API key`.
+	 *
+	 * Overrides environment variable `AXISTON_API_KEY`.
+	 */
+	apiKey?: string;
 
-  /**
-   * Overrides default `base url`:
-   * `https://api.axiston.com`.
-   */
-  baseUrl?: string | URL;
+	/**
+	 * Overrides default `base url`: `https://api.axiston.com`
+	 * or environment variable `AXISTON_BASE_URL`.
+	 */
+	baseUrl?: string | URL;
 
-  /**
-   * Overrides default `User-Agent` header:
-   * `Axiston/0.1.0 (TS; Ver. 16.0)`
-   */
-  userAgent?: string;
+	/**
+	 * Overrides default `User-Agent` header: `Axiston/0.1.0 (TS; Ver. 16.0)`
+	 * or environment variable `AXISTON_USER_AGENT`.
+	 */
+	userAgent?: string;
 }
-
-const baseUrl = "https://api.axiston.com";
-const userAgent = `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`;
 
 /**
- * TODO.
+ * Attempts to construct {@link AxistonClientOptions} from environment variables.
+ *
+ * Returns default {@link AxistonClientOptions} otherwise.
  */
-export function tryEnvironment(): Required<ClientOptions> {
-  const options: Required<ClientOptions> = {
-    apiKey: "",
-    baseUrl,
-    userAgent,
-  };
+export function tryEnvironment(): Required<AxistonClientOptions> {
+	const options: Required<AxistonClientOptions> = {
+		apiKey: "",
+		baseUrl: new URL("https://api.axiston.com"),
+		userAgent: `Axiston/${clientVersion} (TS; Ver. ${runtimeVersion})`,
+	};
 
-  const env = (globalThis as any).process?.env;
-  if (typeof env !== "object" && env !== null) {
-    return options;
-  }
+	const env: Record<string, unknown> = globalThis["process"]?.["env"];
+	if (typeof env === "object" && env !== null) {
+		if (typeof env.AXISTON_API_KEY === "string") {
+			options.apiKey = env.AXISTON_API_KEY;
+		}
 
-  if (typeof env["AXISTON_API_KEY"] === "string") {
-    options.apiKey = env["AXISTON_API_KEY"];
-  }
+		if (typeof env.AXISTON_BASE_URL === "string") {
+			options.baseUrl = env.AXISTON_BASE_URL;
+		}
 
-  if (typeof env["AXISTON_BASE_URL"] === "string") {
-    options.baseUrl = env["AXISTON_BASE_URL"];
-  }
+		if (typeof env.AXISTON_USER_AGENT === "string") {
+			options.apiKey = env.AXISTON_USER_AGENT;
+		}
+	}
 
-  if (typeof env["AXISTON_USER_AGENT"] === "string") {
-    options.apiKey = env["AXISTON_USER_AGENT"];
-  }
-
-  return options;
+	return options;
 }
+
+/**
+ * Cached default/environment options.
+ */
+export const defaultOptions = tryEnvironment();
 
 /**
  * TODO.
  */
 export class ClientConfig {
-  readonly apiKey: string;
-  readonly baseUrl: URL;
-  readonly userAgent: string;
+	readonly apiKey: string;
+	readonly baseUrl: URL;
+	readonly userAgent: string;
 
-  /**
-   * TODO.
-   */
-  constructor(options?: ClientOptions) {
-    const env = tryEnvironment();
-    this.apiKey = options?.apiKey || env.apiKey;
-    this.baseUrl = new URL(options?.baseUrl || env.baseUrl);
-    this.userAgent = options?.userAgent || env.userAgent;
-  }
+	/**
+	 * Instantiates a new {@link ClientConfig} with provided options.
+	 */
+	constructor(options?: AxistonClientOptions) {
+		this.apiKey = options?.apiKey || defaultOptions.apiKey;
+		this.baseUrl = new URL(options?.baseUrl || defaultOptions.baseUrl);
+		this.userAgent = options?.userAgent || defaultOptions.userAgent;
+	}
 
-  /**
-   * TODO.
-   */
-  async send(): Promise<void> {
-    throw new Error("not implemented.");
-  }
+	/**
+	 * TODO.
+	 *
+	 * @throws AxistonError
+	 */
+	async send<T = unknown>(
+		method: string,
+		path: string,
+		body?: unknown,
+	): Promise<T> {
+		throw new Error("not implemented.");
+	}
 }
